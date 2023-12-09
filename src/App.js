@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import { Logo } from "./components/Logo";
+import { Form } from "./components/Form";
+import { PackingList } from "./components/PackingList";
+import { Status } from "./components/Status";
 
-function App() {
+export default function App() {
+  const [packingItems, setPackingItems] = useState([]);
+  function addNewItem(newItem) {
+    setPackingItems(() => [...packingItems, newItem]);
+  }
+
+  function handleDelete(id) {
+    setPackingItems((pi) => pi.filter((item) => item.id !== id));
+  }
+
+  function toggleItem(id) {
+    setPackingItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
+
+  function handleClearList() {
+    setPackingItems([]);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Logo />
+      <Form addNewItem={addNewItem} />
+      <PackingList
+        items={packingItems}
+        onDeleteItem={handleDelete}
+        onUpdate={toggleItem}
+        onClearList={handleClearList}
+      />
+      <Status items={packingItems} />
     </div>
   );
 }
-
-export default App;
